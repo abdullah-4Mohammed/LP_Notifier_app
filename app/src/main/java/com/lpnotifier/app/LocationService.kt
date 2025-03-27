@@ -1,4 +1,5 @@
-// File: LocationService.kt
+package com.lpnotifier.app
+
 import android.app.Service
 import android.content.Intent
 import android.location.Location
@@ -15,6 +16,7 @@ class LocationService : Service() {
     private var destinationLongitude: Double = 0.0
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        // Extract destination coordinates from intent
         destinationLatitude = intent?.getDoubleExtra("LATITUDE", 0.0) ?: 0.0
         destinationLongitude = intent?.getDoubleExtra("LONGITUDE", 0.0) ?: 0.0
 
@@ -25,12 +27,14 @@ class LocationService : Service() {
     }
 
     private fun setupLocationTracking() {
+        // Configure location request
         locationRequest = LocationRequest.create().apply {
             interval = 10000 // 10 seconds
             fastestInterval = 5000 // 5 seconds
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
+        // Create location callback
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 locationResult.lastLocation?.let { location ->
@@ -48,15 +52,18 @@ class LocationService : Service() {
             )
         } catch (e: SecurityException) {
             // Handle permission issues
+            stopSelf()
         }
     }
 
     private fun checkProximityToDestination(currentLocation: Location) {
+        // Create destination location
         val destinationLocation = Location("").apply {
             latitude = destinationLatitude
             longitude = destinationLongitude
         }
 
+        // Calculate distance
         val distance = currentLocation.distanceTo(destinationLocation)
 
         // Trigger notification when within 100 meters
@@ -66,7 +73,7 @@ class LocationService : Service() {
     }
 
     private fun sendProximityNotification() {
-        // Implement notification logic
+        // Create and show notification
         val notificationHelper = ProximityNotificationHelper(this)
         notificationHelper.showNotification()
 

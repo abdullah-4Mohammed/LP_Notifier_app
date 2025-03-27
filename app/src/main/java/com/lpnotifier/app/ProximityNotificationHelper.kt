@@ -1,4 +1,5 @@
-// File: ProximityNotificationHelper.kt
+package com.lpnotifier.app
+
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -30,6 +31,7 @@ class ProximityNotificationHelper(private val context: Context) {
             .setContentText("You have arrived at your selected location")
             .setSmallIcon(android.R.drawable.ic_dialog_map)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
             .build()
 
         notificationManager.notify(NOTIFICATION_ID, notification)
